@@ -60,5 +60,75 @@ def test_book_class():
     print(f"After second return: {book1}")
 
 
+class Member:
+    def __init__(self, member_id, name, email):
+        self.id = member_id
+        self.name = name
+        self.email = email
+        self.borrowed_books = []  # List of book IDs
+
+    def can_borrow(self):
+        """Check if member can borrow more books"""
+        return len(self.borrowed_books) < 3
+
+    def borrow_book(self, book_id):
+        """Add a book to member's borrowed list"""
+        if self.can_borrow() and book_id not in self.borrowed_books:
+            self.borrowed_books.append(book_id)
+            return True
+        return False
+
+    def return_book(self, book_id):
+        """Remove a book from member's borrowed list"""
+        if book_id in self.borrowed_books:
+            self.borrowed_books.remove(book_id)
+            return True
+        return False
+
+    def get_borrowed_count(self):
+        """Get number of books currently borrowed"""
+        return len(self.borrowed_books)
+
+    def __str__(self):
+        return f"Member {self.id}: {self.name} ({self.email}) - {len(self.borrowed_books)} books borrowed"
+
+# Test the Member class
+
+
+def test_member_class():
+    print("\n=== Testing Member Class ===")
+
+    # Create a member
+    member1 = Member(101, "Alice Smith", "alice@email.com")
+    print(f"Created: {member1}")
+
+    # Test borrowing
+    print("\n--- Testing Book Borrowing ---")
+    print(f"Can borrow: {member1.can_borrow()}")
+
+    # Borrow books
+    member1.borrow_book(1)
+    print(f"After borrowing book 1: {member1}")
+
+    member1.borrow_book(2)
+    print(f"After borrowing book 2: {member1}")
+
+    member1.borrow_book(3)
+    print(f"After borrowing book 3: {member1}")
+
+    # Try to borrow fourth book
+    can_borrow = member1.can_borrow()
+    print(f"Can borrow fourth book: {can_borrow}")
+
+    # Test returning
+    print("\n--- Testing Book Returning ---")
+    member1.return_book(2)
+    print(f"After returning book 2: {member1}")
+
+    # Can borrow again after return
+    print(f"Can borrow now: {member1.can_borrow()}")
+
+
 if __name__ == "__main__":
     test_book_class()
+    test_member_class()
