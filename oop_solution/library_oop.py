@@ -27,38 +27,6 @@ class Book:
     def __str__(self):
         return f"'{self.title}' by {self.author} - {self.available_copies}/{self.total_copies} available"
 
-# Test the Book class
-
-
-def test_book_class():
-    print("=== Testing Book Class ===")
-
-    # Create a book
-    book1 = Book(1, "Python Crash Course", "Eric Matthes", 3)
-    print(f"Created: {book1}")
-
-    # Test borrowing
-    print("\n--- Testing Borrowing ---")
-    success1 = book1.borrow_book()
-    print(f"First borrow: {success1} - {book1}")
-
-    success2 = book1.borrow_book()
-    print(f"Second borrow: {success2} - {book1}")
-
-    success3 = book1.borrow_book()
-    print(f"Third borrow: {success3} - {book1}")
-
-    success4 = book1.borrow_book()  # Should fail
-    print(f"Fourth borrow: {success4} - {book1}")
-
-    # Test returning
-    print("\n--- Testing Returning ---")
-    book1.return_book()
-    print(f"After return: {book1}")
-
-    book1.return_book()
-    print(f"After second return: {book1}")
-
 
 class Member:
     def __init__(self, member_id, name, email):
@@ -91,42 +59,6 @@ class Member:
 
     def __str__(self):
         return f"Member {self.id}: {self.name} ({self.email}) - {len(self.borrowed_books)} books borrowed"
-
-# Test the Member class
-
-
-def test_member_class():
-    print("\n=== Testing Member Class ===")
-
-    # Create a member
-    member1 = Member(101, "Alice Smith", "alice@email.com")
-    print(f"Created: {member1}")
-
-    # Test borrowing
-    print("\n--- Testing Book Borrowing ---")
-    print(f"Can borrow: {member1.can_borrow()}")
-
-    # Borrow books
-    member1.borrow_book(1)
-    print(f"After borrowing book 1: {member1}")
-
-    member1.borrow_book(2)
-    print(f"After borrowing book 2: {member1}")
-
-    member1.borrow_book(3)
-    print(f"After borrowing book 3: {member1}")
-
-    # Try to borrow fourth book
-    can_borrow = member1.can_borrow()
-    print(f"Can borrow fourth book: {can_borrow}")
-
-    # Test returning
-    print("\n--- Testing Book Returning ---")
-    member1.return_book(2)
-    print(f"After returning book 2: {member1}")
-
-    # Can borrow again after return
-    print(f"Can borrow now: {member1.can_borrow()}")
 
 
 class Library:
@@ -250,50 +182,6 @@ class Library:
                 if book:
                     print(f"- {book.title} by {book.author}")
 
-# Test the Library class
-
-
-def test_library_class():
-    print("\n=== Testing Library Class ===")
-
-    library = Library()
-
-    # Add books
-    print("\n--- Adding Books ---")
-    library.add_book(1, "Python Crash Course", "Eric Matthes", 3)
-    library.add_book(2, "Clean Code", "Robert Martin", 2)
-    library.add_book(3, "The Pragmatic Programmer", "Hunt & Thomas", 1)
-
-    # Add members
-    print("\n--- Adding Members ---")
-    library.add_member(101, "Alice Smith", "alice@email.com")
-    library.add_member(102, "Bob Jones", "bob@email.com")
-
-    # Display available books
-    print("\n--- Available Books ---")
-    library.display_available_books()
-
-    # Test borrowing
-    print("\n--- Testing Borrowing ---")
-    library.borrow_book(101, 1)  # Alice borrows Python
-    library.borrow_book(101, 2)  # Alice borrows Clean Code
-    library.borrow_book(102, 1)  # Bob borrows Python
-
-    # Display member books
-    print("\n--- Member's Books ---")
-    library.display_member_books(101)
-    library.display_member_books(102)
-
-    # Display available books after borrowing
-    print("\n--- Available Books After Borrowing ---")
-    library.display_available_books()
-
-    # Test returning
-    print("\n--- Testing Returning ---")
-    library.return_book(101, 1)
-    library.display_member_books(101)
-    library.display_available_books()
-
 
 def test_complete_system():
     """Comprehensive test of the complete OOP system"""
@@ -401,9 +289,4 @@ def test_complete_system():
 
 
 if __name__ == "__main__":
-    test_book_class()
-    test_member_class()
-    test_library_class()
-
-    # Run comprehensive integration test
     test_complete_system()
