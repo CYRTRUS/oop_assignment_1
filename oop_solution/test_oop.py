@@ -129,6 +129,173 @@ def test_member_class():
     print(f"Can borrow now: {member1.can_borrow()}")
 
 
+class Library:
+    def __init__(self):
+        self.books = {}  # {book_id: Book object}
+        self.members = {}  # {member_id: Member object}
+        self.borrowed_books = []  # List of transactions
+
+    def add_book(self, book_id, title, author, total_copies):
+        """Add a new book to the library"""
+        if book_id not in self.books:
+            self.books[book_id] = Book(book_id, title, author, total_copies)
+            print(f"Book '{title}' added successfully!")
+            return True
+        else:
+            print("Error: Book ID already exists!")
+            return False
+
+    def add_member(self, member_id, name, email):
+        """Register a new library member"""
+        if member_id not in self.members:
+            self.members[member_id] = Member(member_id, name, email)
+            print(f"Member '{name}' registered successfully!")
+            return True
+        else:
+            print("Error: Member ID already exists!")
+            return False
+
+    def find_book(self, book_id):
+        """Find a book by ID"""
+        return self.books.get(book_id)
+
+    def find_member(self, member_id):
+        """Find a member by ID"""
+        return self.members.get(member_id)
+
+    def borrow_book(self, member_id, book_id):
+        """Process a book borrowing transaction"""
+        member = self.find_member(member_id)
+        book = self.find_book(book_id)
+
+        if not member:
+            print("Error: Member not found!")
+            return False
+
+        if not book:
+            print("Error: Book not found!")
+            return False
+
+        if not book.is_available():
+            print("Error: No copies available!")
+            return False
+
+        if not member.can_borrow():
+            print("Error: Member has reached borrowing limit!")
+            return False
+
+        # Process the borrowing
+        if book.borrow_book() and member.borrow_book(book_id):
+            transaction = {
+                'member_id': member_id,
+                'book_id': book_id,
+                'member_name': member.name,
+                'book_title': book.title
+            }
+            self.borrowed_books.append(transaction)
+            print(f"{member.name} borrowed '{book.title}'")
+            return True
+
+        return False
+
+    def return_book(self, member_id, book_id):
+        """Process a book return transaction"""
+        member = self.find_member(member_id)
+        book = self.find_book(book_id)
+
+        if not member or not book:
+            print("Error: Member or book not found!")
+            return False
+
+        if book_id not in member.borrowed_books:
+            print("Error: This member hasn't borrowed this book!")
+            return False
+
+        # Process the return
+        if book.return_book() and member.return_book(book_id):
+            # Remove from borrowed_books list
+            for i, transaction in enumerate(self.borrowed_books):
+                if transaction['member_id'] == member_id and transaction['book_id'] == book_id:
+                    self.borrowed_books.pop(i)
+                    break
+            print(f"{member.name} returned '{book.title}'")
+            return True
+
+        return False
+
+    def display_available_books(self):
+        """Display all books with available copies"""
+        print("\n=== Available Books ===")
+        available_found = False
+        for book in self.books.values():
+            if book.is_available():
+                print(f"- {book}")
+                available_found = True
+        if not available_found:
+            print("No books available at the moment.")
+
+    def display_member_books(self, member_id):
+        """Display books borrowed by a specific member"""
+        member = self.find_member(member_id)
+        if not member:
+            print("Error: Member not found!")
+            return
+
+        print(f"\n=== Books borrowed by {member.name} ===")
+        if not member.borrowed_books:
+            print("No books currently borrowed")
+        else:
+            for book_id in member.borrowed_books:
+                book = self.find_book(book_id)
+                if book:
+                    print(f"- {book.title} by {book.author}")
+
+# Test the Library class
+
+
+def test_library_class():
+    print("\n=== Testing Library Class ===")
+
+    library = Library()
+
+    # Add books
+    print("\n--- Adding Books ---")
+    library.add_book(1, "Python Crash Course", "Eric Matthes", 3)
+    library.add_book(2, "Clean Code", "Robert Martin", 2)
+    library.add_book(3, "The Pragmatic Programmer", "Hunt & Thomas", 1)
+
+    # Add members
+    print("\n--- Adding Members ---")
+    library.add_member(101, "Alice Smith", "alice@email.com")
+    library.add_member(102, "Bob Jones", "bob@email.com")
+
+    # Display available books
+    print("\n--- Available Books ---")
+    library.display_available_books()
+
+    # Test borrowing
+    print("\n--- Testing Borrowing ---")
+    library.borrow_book(101, 1)  # Alice borrows Python
+    library.borrow_book(101, 2)  # Alice borrows Clean Code
+    library.borrow_book(102, 1)  # Bob borrows Python
+
+    # Display member books
+    print("\n--- Member's Books ---")
+    library.display_member_books(101)
+    library.display_member_books(102)
+
+    # Display available books after borrowing
+    print("\n--- Available Books After Borrowing ---")
+    library.display_available_books()
+
+    # Test returning
+    print("\n--- Testing Returning ---")
+    library.return_book(101, 1)
+    library.display_member_books(101)
+    library.display_available_books()
+
+
 if __name__ == "__main__":
     test_book_class()
     test_member_class()
+    test_library_class()
